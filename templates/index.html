@@ -1,0 +1,283 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WriteSphere | Home</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <!-- <link rel="stylesheet" href="{% static 'css/style.css' %}"> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="container nav-inner">
+            <a class="logo" href="/">Write<span>Sphere</span></a>
+
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="/profile">Profile</a>
+                <a href="/create">Write a Story</a>
+                <a href="/login">Login</a>
+                <a class="btn" href="/signup">Join Free</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-grid">
+
+                <div>
+                    <span class="eyebrow">A Home for Your Ideas</span>
+
+                    <h1>
+                        Stories Worth Sharing.
+                        <span style="color:var(--brand)">
+                            People Worth Following.
+                        </span>
+                    </h1>
+
+                    <p>
+                        Discover fresh perspectives, share what you know,
+                        and connect with a community of curious minds.
+                    </p>
+
+                    <a class="btn" href="#latest">Explore Stories →</a>
+                    <a class="btn btn-outline" href="/create">
+                        Start Writing
+                    </a>
+                </div>
+
+                <div class="hero-art">
+                    <div class="hero-art-inner">
+                        <div class="art-cover">WriteSphere ✦</div>
+
+                        <span class="tag">EDITOR'S PICK</span>
+
+                        <div class="art-lines"></div>
+                        <div class="art-lines"></div>
+                        <div class="art-lines short"></div>
+
+                        <p class="muted">
+                            Inspiration for your next big idea.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="section" id="latest">
+            <div class="container">
+
+                <div class="section-head">
+                    <div>
+                        <span class="eyebrow">Community Stories</span>
+                        <h2>Explore Stories</h2>
+                    </div>
+
+                    <a class="btn btn-outline" href="/create">
+                        + Create Post
+                    </a>
+                </div>
+
+
+                <div class="story-filters">
+
+                    <!-- Search Form -->
+                    <form method="GET" action="{% url 'search' %}" class="story-search">
+                        {% csrf_token %}
+                        <input type="text" name="q" placeholder="Search stories...">
+
+                        <button type="submit">Search</button>
+                    </form>
+
+                    <!-- City Dropdown -->
+                    <details class="city-dropdown">
+                        <summary>Select The Category!</summary>
+
+                        <ul>
+                            <li><a href="/category/?q=Technology">Technology</a></li>
+                            <li><a href="/category/?q=Travel">Travel</a></li>
+                            <li><a href="/category/?q=Personal Growth">Personal Growth</a></li>
+                            <li><a href="/category/?q=Design">Design</a></li>
+                            <li><a href="/category/?q=Education">Education</a></li>
+                            <li><a href="/category/?q=Other">Other</a></li>
+                        </ul>
+                    </details>
+
+                    <details class="city-dropdown">
+                        <summary><a href="/author_search">Select The Author!</a></summary>
+                    </details>
+                </div>
+
+                <div class="grid">
+
+                    <article class="blog-card">
+                        <div class="blog-cover">✦</div>
+
+                        <div class="card-body">
+                            <span class="tag">Personal Growth</span>
+                            <h2>Latest Stories</h2>
+                            {% for post in posts %}
+                            <h3>{{post.title}}</h3>
+                            <p>{{post.category}}</p>
+                            <p>{{post.content}}</p>
+                            <!-- Story Author -->
+                            <p>
+                                Author: {{ post.author.firstname }} {{ post.author.lastname }}
+                            </p>
+
+                            <!-- Follow Button -->
+                            {% if current_user and post.author and post.author.id != current_user.id %}
+                            <form method="POST" action="{% url 'follow_user' post.author.id %}">
+                                {% csrf_token %}
+                                {% if post.author.id in following_ids %}
+                                <button type="submit">Unfollow</button>
+                                {% else %}
+                                <button type="submit">Follow</button>
+                                {% endif %}
+                            </form>
+                            {% endif %}
+                            <!-- Like / Unlike -->
+                            <form method="POST" action="{% url 'like_post' post.id %}">
+                                {% csrf_token %}
+                                <button type="submit">❤️ Like / Unlike</button>
+                            </form>
+
+                            <!-- Like count -->
+                            <p>Likes: {{ post.bloglike_set.count }}</p>
+
+                            <!-- Comment form -->
+                            <form method="POST" action="{% url 'add_comment' post.id %}">
+                                {% csrf_token %}
+                                {{ comment_form.comment }}
+                                <button type="submit">Add Comment</button>
+                            </form>
+
+                            <!-- Existing comments -->
+                            {% for comment in post.blogcomment_set.all %}
+                            <div class="comment">
+                                <strong>{{ comment.user.firstname }}</strong>
+                                <p>{{ comment.comment }}</p>
+                                <small>{{ comment.created_at }}</small>
+                            </div>
+                            {% empty %}
+                            <p>No comments yet.</p>
+                            {% endfor %}
+                            {%endfor%}
+
+                            <div class="meta">
+                                6 min read · October 12, 2026
+                            </div>
+
+                            <div class="card-bottom">
+                                <a class="author" href="/profile">
+                                    <span class="avatar">M</span>
+                                    Matin Aibani
+                                </a>
+
+                                <a href="/blog">Read →</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="blog-card">
+                        <div class="blog-cover cover-blue">⌘</div>
+
+                        <div class="card-body">
+                            <span class="tag">Technology</span>
+
+                            <h3>
+                                <a href="/blog">
+                                    Building Better Things with Python
+                                </a>
+                            </h3>
+
+                            <p>
+                                A beginner-friendly look at turning an idea
+                                into a useful project.
+                            </p>
+
+                            <div class="meta">
+                                8 min read · October 10, 2026
+                            </div>
+
+                            <div class="card-bottom">
+                                <a class="author" href="/profile">
+                                    <span class="avatar">RK</span>
+                                    Rohan Kapoor
+                                </a>
+
+                                <a href="/blog">Read →</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="blog-card">
+                        <div class="blog-cover cover-gold">☼</div>
+
+                        <div class="card-body">
+                            <span class="tag">Travel</span>
+
+                            <h3>
+                                <a href="/blog">
+                                    Finding Quiet in Busy Places
+                                </a>
+                            </h3>
+
+                            <p>
+                                Notes from a slow weekend of walking,
+                                observing, and recharging.
+                            </p>
+
+                            <div class="meta">
+                                4 min read · October 8, 2026
+                            </div>
+
+                            <div class="card-bottom">
+                                <a class="author" href="/profile">
+                                    <span class="avatar">NS</span>
+                                    Neha Shah
+                                </a>
+
+                                <a href="/blog">Read →</a>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+
+                <div class="cta">
+                    <div>
+                        <h2>Have a Story to Tell?</h2>
+                        <p>
+                            Your perspective could be exactly what
+                            someone needs to read today.
+                        </p>
+                    </div>
+
+                    <a class="btn btn-light" href="/signup">
+                        Join WriteSphere →
+                    </a>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <span>© 2026 WriteSphere Community</span>
+            <span>Made for readers and writers.</span>
+        </div>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit The Content</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Edit The Content</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/profile">Profile</a>
+        </nav>
+    </header>
+
+    <main class="create-post">
+        <h2>Edit The Story!</h2>
+        <p>Share your thoughts and ideas with the world.</p>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="title">Story Title</label>
+            <input type="text" id="title" name="title" value="{{uid.title}}" placeholder="Enter your story title"
+                required>
+
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+                <option value="">{{uid.category}}</option>
+                <option value="Technology">Technology</option>
+                <option value="Education">Education</option>
+                <option value="Lifestyle">Lifestyle</option>
+                <option value="Travel">Travel</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label for="content">Your Story</label>
+            <textarea id="content" name="content" rows="10" placeholder="Write your story here..."
+                required>{{uid.content}}</textarea>
+
+            <button type="submit">Publish Story</button>
+            <a class="btn" href="{% url 'Delete' uid.id %}">Delete</a>
+            <!-- <a href="/delete/{{i.id}}/">Delete</a> -->
+        </form>
+    </main>
+
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - WriteSphere</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>WriteSphere</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/create">Write a Story</a>
+            <a href="/userlogout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="profile-container">
+
+        <section class="profile-card">
+            <div class="profile-avatar">M</div>
+            <h2>{{cuser.firstname}}  {{cuser.lastname}}</h2>
+            <p class="profile-email">{{cuser.gmail}}</p>
+            <p>Welcome to my WriteSphere profile!</p>
+
+            <div class="profile-stats">
+                <div>
+                    <h3>5</h3>
+                    <p>Stories</p>
+                </div>
+                <div>
+                    <h3>120</h3>
+                    <p>Followers</p>
+                </div>
+                <div>
+                    <h3>80</h3>
+                    <p>Following</p>
+                </div>
+            </div>
+
+            <a href="/create" class="profile-button">
+                Write a Story
+            </a>
+            <a href="{% url 'Profile_Edit' cuser.id %}" class="profile-button">
+                Edit profile
+            </a>
+        </section>
+
+        <section class="my-stories">
+            <h2>My Stories</h2>
+
+            <article class="story-card">
+                {% for post in posts %}
+                <h3>{{post.title}}</h3>
+                <p>{{post.content}}</p>
+                <span>Category: {{post.category}}</span>
+                <a href="{% url 'edit' post.id %}">Edit Content</a>
+                <!-- <a href="/Edit/{{i.id}}/">Edit Content</a> -->
+                {%endfor%}
+            </article>
+
+            <article class="story-card">
+                <h3>Learning Web Development</h3>
+                <p>My journey of learning HTML, CSS and Django.</p>
+                <span>Category: Education</span>
+                <a href="/blog">Read More</a>
+            </article>
+        </section>
+
+    </main>
+
+</body>
+</html>
